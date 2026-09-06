@@ -121,42 +121,200 @@ tailwind.config = {
   .tick::after { content:''; position:absolute; top:-40%; left:0; width:100%; height:40%; background:#F4EFE4; animation: tickDrop 2.2s cubic-bezier(.65,0,.35,1) infinite; }
   @keyframes tickDrop { to { top: 110%; } }
 
-  /* Supplied ALPHA golden logo preloader */
+  /* Reliable ALPHA preloader — visible in local Chrome/file:// */
+  .logo-preloader-wrap {
+    position: relative;
+    isolation: isolate;
+  }
+
   .logo-preloader {
-    opacity: 0;
-    transform: scale(.78) translateY(18px);
-    filter: blur(10px);
-    animation: logoLuxuryReveal 1.8s cubic-bezier(.22,1,.36,1) .12s forwards;
+    display: block;
+    position: relative;
+    z-index: 2;
+    opacity: 1 !important;
+    pointer-events: none;
+    transform: translateY(18px) scale(.82);
+    filter:
+      brightness(0)
+      saturate(100%)
+      invert(67%)
+      sepia(30%)
+      saturate(700%)
+      hue-rotate(355deg)
+      brightness(91%)
+      contrast(88%)
+      drop-shadow(0 0 0 rgba(198,161,91,0));
+    animation:
+      preloaderLogoReveal 1.7s cubic-bezier(.22,1,.36,1) .12s forwards,
+      preloaderLogoGold 3.6s ease-in-out 1.9s infinite;
   }
-  @keyframes logoLuxuryReveal {
-    0% { opacity: 0; transform: scale(.78) translateY(18px); filter: blur(10px); }
-    55% { opacity: 1; transform: scale(1.035) translateY(0); filter: blur(0); }
-    100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+
+  @keyframes preloaderLogoReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(18px) scale(.82);
+      filter:
+        brightness(0) saturate(100%)
+        invert(67%) sepia(30%) saturate(700%)
+        hue-rotate(355deg) brightness(91%) contrast(88%)
+        blur(10px) drop-shadow(0 0 0 rgba(198,161,91,0));
+      clip-path: inset(0 0 100% 0);
+    }
+    55% {
+      opacity: 1;
+      transform: translateY(0) scale(1.035);
+      filter:
+        brightness(0) saturate(100%)
+        invert(72%) sepia(35%) saturate(760%)
+        hue-rotate(355deg) brightness(96%) contrast(90%)
+        blur(0) drop-shadow(0 0 24px rgba(198,161,91,.22));
+      clip-path: inset(0 0 0 0);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter:
+        brightness(0) saturate(100%)
+        invert(67%) sepia(30%) saturate(700%)
+        hue-rotate(355deg) brightness(91%) contrast(88%)
+        blur(0) drop-shadow(0 0 9px rgba(198,161,91,.10));
+      clip-path: inset(0 0 0 0);
+    }
   }
+
+  /* Gentle gold-tone movement instead of a fragile CSS mask */
+  @keyframes preloaderLogoGold {
+    0%, 100% {
+      filter:
+        brightness(0) saturate(100%)
+        invert(63%) sepia(32%) saturate(650%)
+        hue-rotate(355deg) brightness(90%) contrast(90%)
+        drop-shadow(0 0 8px rgba(198,161,91,.08));
+    }
+    50% {
+      filter:
+        brightness(0) saturate(100%)
+        invert(78%) sepia(34%) saturate(820%)
+        hue-rotate(355deg) brightness(103%) contrast(88%)
+        drop-shadow(0 0 18px rgba(231,201,120,.20));
+    }
+  }
+
   .logo-preloader-wrap::after {
     content: '';
     position: absolute;
     inset: 8%;
+    z-index: 1;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(198,161,91,.22), transparent 68%);
+    background: radial-gradient(circle, rgba(198,161,91,.20), transparent 68%);
     opacity: 0;
     animation: logoGlow 1.8s ease .2s forwards;
     pointer-events: none;
   }
+
   @keyframes logoGlow {
     0%,100% { opacity: 0; transform: scale(.8); }
     45% { opacity: .75; transform: scale(1); }
   }
+
+  /* Luxury motion enhancements */
+  .nav-logo-shell {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 2px 0;
+    transform: translateZ(0);
+  }
+  .nav-logo {
+    transform-origin: left center;
+    transition: transform .65s cubic-bezier(.22,1,.36,1), filter .65s ease;
+    will-change: transform;
+  }
+  .nav-logo-shell::after {
+    content: '';
+    position: absolute;
+    left: -70%;
+    top: 0;
+    width: 34%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent);
+    transform: skewX(-20deg);
+    transition: left .9s cubic-bezier(.22,1,.36,1);
+    pointer-events: none;
+  }
+  .nav-logo-shell:hover .nav-logo {
+    transform: scale(1.045) translateY(-1px);
+    filter: drop-shadow(0 0 12px rgba(198,161,91,.20));
+  }
+  .nav-logo-shell:hover::after { left: 130%; }
+
+  /* Scroll progress */
+  #scrollProgress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    z-index: 120;
+    background: linear-gradient(90deg, #9A7B3F, #C6A15B, #E8D5A8);
+    transform-origin: left center;
+    pointer-events: none;
+  }
+
+  /* More dimensional watch cards */
+  .watch-card {
+    perspective: 1200px;
+  }
+  .watch-card .frame,
+  .watch-card > div:first-child {
+    transform: translateZ(0);
+  }
+  .watch-card:hover {
+    border-color: rgba(198,161,91,.38);
+  }
+  .watch-card:hover > div:first-child img {
+    transform: scale(1.065) translateY(-4px);
+    filter: saturate(1.06) contrast(1.02);
+  }
+  .watch-card h3 {
+    transition: transform .6s cubic-bezier(.22,1,.36,1), color .5s ease;
+  }
+  .watch-card:hover h3 {
+    transform: translateX(4px);
+  }
+
+  /* Hero depth movement */
+  .hero-depth {
+    transition: transform .25s cubic-bezier(.22,1,.36,1);
+    will-change: transform;
+  }
+
+  /* Subtle moving shine for gold headlines */
+  .gold-grad {
+    background-size: 180% auto;
+    animation: goldShimmer 8s ease-in-out infinite;
+  }
+  @keyframes goldShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gold-grad, .nav-logo, .watch-card img, .hero-depth { animation: none !important; transition: none !important; }
+  }
+
 </style>
 </head>
 <body class="bg-ink text-ivory font-sans antialiased overflow-x-hidden">
+<div id="scrollProgress" aria-hidden="true"></div>
 
 <!-- ═══════════ PRELOADER ═══════════ -->
 <div id="preloader">
   <div class="logo-preloader-wrap relative flex items-center justify-center px-8">
-    <img src="alpha-preloader-logo.png"
-         alt="ALPHA — Define Your Time"
-         class="logo-preloader w-[min(42vw,230px)] h-auto object-contain select-none"
+    <img src="alpha-logo.png"
+         alt="ALPHA"
+         class="logo-preloader w-[min(52vw,280px)] h-auto object-contain select-none"
          draggable="false">
   </div>
   <div class="loader-line mt-7"></div>
@@ -165,7 +323,9 @@ tailwind.config = {
 <header id="navbar" class="fixed top-0 left-0 right-0 z-50">
   <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-10 py-5">
     <a href="#top" class="flex items-center group" aria-label="ALPHA">
-      <img src="alpha-logo.png" alt="ALPHA" class="w-[120px] h-auto md:w-[155px] object-contain group-hover:scale-105 transition-transform duration-500">
+      <span class="nav-logo-shell">
+        <img src="alpha-logo.png" alt="ALPHA" class="nav-logo w-[120px] md:w-[155px] h-auto object-contain" draggable="false">
+      </span>
     </a>
     <div class="hidden md:flex items-center gap-10 text-[11px] tracking-wide2 font-light text-ivory/80">
       <a href="#collection" class="nav-link hover:text-gold transition-colors">COLLECTION</a>
@@ -196,7 +356,7 @@ tailwind.config = {
   <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(198,161,91,0.13),transparent_55%)]"></div>
   <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_115%,rgba(198,161,91,0.08),transparent_50%)]"></div>
 
-  <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+  <div class="relative z-10 text-center px-6 max-w-5xl mx-auto hero-depth" id="heroDepth">
     <p class="reveal text-[10px] md:text-[11px] tracking-mega text-gold mb-7 pl-1">MAISON DE HAUTE HORLOGERIE</p>
     <h1 class="reveal d1 font-serif font-medium leading-[0.95] text-[15vw] md:text-[8.5rem] lg:text-[10rem]">
       <span class="block">DEFINE</span>
@@ -213,7 +373,7 @@ tailwind.config = {
   </div>
 
   <div class="relative z-0 mt-14 md:mt-8 px-4">
-    <div class="max-w-6xl mx-auto drift">
+    <div class="max-w-6xl mx-auto drift hero-depth" id="heroWatchDepth">
       
     </div>
   </div>
@@ -350,9 +510,9 @@ tailwind.config = {
           <img src="Alpha Aurelis.png" alt="Alpha Aurelis automatic watch — rose gold, black dial, steel bracelet" class="w-full h-full object-cover">
         </div>
         <div class="p-8">
-          <p class="text-[9px] tracking-mega text-gold/80 mb-3">DIVE · REF. D-300</p>
+          <p class="text-[9px] tracking-mega text-gold/80 mb-3">AUTOMATIC · REF. A-210</p>
           <h3 class="font-serif text-3xl mb-2">Aurelis</h3>
-          <p class="text-[13px] font-light text-ivory/50 leading-relaxed mb-6">A deep-ocean sunburst dial and unidirectional bezel, built to descend where light gives up.</p>
+          <p class="text-[13px] font-light text-ivory/50 leading-relaxed mb-6">A rose-gold automatic with a black sunburst dial, fluted bezel and integrated bracelet — poised for formal hours.</p>
           <div class="flex items-center justify-between">
             <span class="font-serif text-2xl text-gold">$9,700</span>
             <a href="#appointment" class="text-[10px] tracking-wide2 text-ivory/70 hover:text-gold transition-colors border-b border-ivory/20 hover:border-gold pb-1">ENQUIRE →</a>
@@ -366,9 +526,9 @@ tailwind.config = {
           <img src="Alpha Azure.png" alt="Alpha Azure chronometer watch — silver steel bracelet, light blue dial" class="w-full h-full object-cover">
         </div>
         <div class="p-8">
-          <p class="text-[9px] tracking-mega text-gold/80 mb-3">CHRONOGRAPH · REF. E-001</p>
+          <p class="text-[9px] tracking-mega text-gold/80 mb-3">CHRONOMETER · REF. Z-220</p>
           <h3 class="font-serif text-3xl mb-2">Azure</h3>
-          <p class="text-[13px] font-light text-ivory/50 leading-relaxed mb-6">Champagne gold against a jet-black dial. The chronograph, elevated to ceremony. Limited to 250 pieces.</p>
+          <p class="text-[13px] font-light text-ivory/50 leading-relaxed mb-6">A silver steel chronometer with an ice-blue dial and polished five-link bracelet — precision with a cool, modern character.</p>
           <div class="flex items-center justify-between">
             <span class="font-serif text-2xl text-gold">$18,500</span>
             <a href="#appointment" class="text-[10px] tracking-wide2 text-ivory/70 hover:text-gold transition-colors border-b border-ivory/20 hover:border-gold pb-1">ENQUIRE →</a>
@@ -386,9 +546,9 @@ tailwind.config = {
       <div class="absolute -top-6 -left-6 w-full h-full border border-golddim/40"></div>
       <img src="Alpha Azure.png"
            alt="Alpha Azure — case and crown detail" class="relative w-full aspect-[7/8] object-cover">
-      <div class="absolute -bottom-8 -right-4 md:-right-8 bg-ink text-ivory px-8 py-6 shadow-2xl">
-        <p class="font-serif text-4xl text-gold">212</p>
-        <p class="text-[9px] tracking-mega text-ivory/60 mt-1">COMPONENTS, ONE CALIBRE</p>
+      <div class="absolute -bottom-8 -right-4 md:-right-8 bg-gold text-ink px-8 py-6 shadow-2xl">
+        <p class="font-serif text-4xl text-ink">212</p>
+        <p class="text-[9px] tracking-mega text-ink/60 mt-1">COMPONENTS, ONE CALIBRE</p>
       </div>
     </div>
 
@@ -427,7 +587,7 @@ tailwind.config = {
   <div class="max-w-3xl mx-auto px-6 text-center">
     <p class="reveal text-[10px] tracking-mega text-golddim mb-10">04 — HERITAGE</p>
     <div class="reveal d1 mx-auto w-52 md:w-64 mb-10">
-      <img src="alpha-footer-logo-tagline.png" alt="Alpha logo — Define Your Time" class="w-full">
+      <img src="alpha-black-logo.png" alt="ALPHA" class="w-full h-auto object-contain">
     </div>
     <h2 class="reveal d2 font-serif text-4xl md:text-6xl leading-tight mb-8">“Time is the only true luxury.<br><span class="italic text-golddim">We simply give it form.”</span></h2>
     <p class="reveal d3 text-sm font-light text-ink/60 leading-relaxed max-w-xl mx-auto">
@@ -483,10 +643,9 @@ tailwind.config = {
     <div class="grid md:grid-cols-4 gap-12 mb-14">
       <div class="md:col-span-2">
         <div class="flex items-center gap-3 mb-6">
-          <span class="w-9 h-9 flex items-center justify-center overflow-hidden">
-            <img src="alpha-emblem.png" alt="Alpha emblem" class="w-full h-full object-contain">
+          <span class="w-[120px] md:w-[155px] flex items-center justify-start overflow-hidden">
+            <img src="alpha-logo.png" alt="ALPHA" class="w-full h-auto object-contain">
           </span>
-          <span class="font-light text-lg tracking-mega pl-1">ALPHA</span>
         </div>
         <p class="text-[13px] font-light text-ivory/45 leading-relaxed max-w-sm">
           Haute horlogerie for those who define their own time. Designed, assembled and regulated by hand.
@@ -666,5 +825,51 @@ tailwind.config = {
     }, 250);
   });
 </script>
+
+<script>
+/* Luxury interaction layer */
+(() => {
+  const progress = document.getElementById('scrollProgress');
+  const hero = document.getElementById('heroDepth');
+  const heroWatch = document.getElementById('heroWatchDepth');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const updateProgress = () => {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - window.innerHeight;
+    progress.style.width = `${max > 0 ? (window.scrollY / max) * 100 : 0}%`;
+  };
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  if (!reduceMotion && window.matchMedia('(pointer: fine)').matches) {
+    let raf = 0;
+    let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      targetX = (e.clientX / window.innerWidth - 0.5) * 2;
+      targetY = (e.clientY / window.innerHeight - 0.5) * 2;
+      if (!raf) raf = requestAnimationFrame(renderDepth);
+    }, { passive: true });
+
+    function renderDepth() {
+      currentX += (targetX - currentX) * 0.07;
+      currentY += (targetY - currentY) * 0.07;
+      if (hero) hero.style.transform = `translate3d(${currentX * 5}px, ${currentY * 3}px, 0)`;
+      if (heroWatch) heroWatch.style.transform = `translate3d(${currentX * -7}px, ${currentY * -4}px, 0)`;
+      raf = Math.abs(targetX-currentX) + Math.abs(targetY-currentY) > 0.002
+        ? requestAnimationFrame(renderDepth) : 0;
+    }
+  }
+
+  // Give collection cards a gentle stagger when they enter the viewport.
+  const cards = document.querySelectorAll('#collection .watch-card');
+  cards.forEach((card, i) => {
+    card.style.transitionDelay = `${Math.min(i * 90, 270)}ms`;
+  });
+})();
+</script>
+
 </body>
 </html>
