@@ -427,7 +427,7 @@ tailwind.config = {
   <div class="max-w-3xl mx-auto px-6 text-center">
     <p class="reveal text-[10px] tracking-mega text-golddim mb-10">04 — HERITAGE</p>
     <div class="reveal d1 mx-auto w-52 md:w-64 mb-10">
-      <img src="images/alpha-footer-logo-tagline.png" alt="Alpha logo — Define Your Time" class="w-full">
+      <img src="alpha-footer-logo-tagline.png" alt="Alpha logo — Define Your Time" class="w-full">
     </div>
     <h2 class="reveal d2 font-serif text-4xl md:text-6xl leading-tight mb-8">“Time is the only true luxury.<br><span class="italic text-golddim">We simply give it form.”</span></h2>
     <p class="reveal d3 text-sm font-light text-ink/60 leading-relaxed max-w-xl mx-auto">
@@ -484,7 +484,7 @@ tailwind.config = {
       <div class="md:col-span-2">
         <div class="flex items-center gap-3 mb-6">
           <span class="w-9 h-9 flex items-center justify-center overflow-hidden">
-            <img src="images/alpha-emblem.png" alt="Alpha emblem" class="w-full h-full object-contain">
+            <img src="alpha-emblem.png" alt="Alpha emblem" class="w-full h-full object-contain">
           </span>
           <span class="font-light text-lg tracking-mega pl-1">ALPHA</span>
         </div>
@@ -572,10 +572,8 @@ tailwind.config = {
   // Hero parallax intentionally disabled.
   // The Celestia product image remains at a fixed, stable size and position.
 
-  // Appointment form — uses FormSubmit's standard HTML POST.
-  // This avoids browser CORS restrictions that can affect AJAX when the site is
-  // previewed locally or on some hosting platforms. The submission is sent to
-  // alphawatches.in@gmail.com by FormSubmit.
+  // Appointment form — native FormSubmit POST into a hidden iframe.
+  // This works without fetch/CORS and also works when the page is hosted normally.
   const apptForm = document.getElementById('apptForm');
   const apptMsg = document.getElementById('apptMsg');
   const apptError = document.getElementById('apptError');
@@ -585,28 +583,37 @@ tailwind.config = {
   const reserveButton = apptForm.querySelector('button[type="submit"]');
   const reserveText = reserveButton.querySelector('span');
   let enquirySubmitted = false;
+  let enquiryTimer = null;
 
   // Subtle message character counter.
   messageBox.addEventListener('input', () => {
     messageCounter.textContent = `${messageBox.value.length} / 500`;
   });
 
-  // FormSubmit uses a native POST into the hidden iframe, avoiding CORS issues.
   apptForm.addEventListener('submit', e => {
+    // Let the browser handle required/email validation first.
+    if (!apptForm.checkValidity()) return;
+
     const name = document.getElementById('apptName').value.trim();
     const email = document.getElementById('apptEmail').value.trim();
     const message = messageBox.value.trim();
     const honey = apptForm.querySelector('[name="_honey"]').value;
 
-    if (honey || !name || !email || !message) return;
+    if (honey || !name || !email || !message) {
+      e.preventDefault();
+      apptError.classList.remove('hidden');
+      return;
+    }
 
     document.getElementById('apptReplyTo').value = email;
-    document.getElementById('apptUrl').value = /^https?:$/i.test(location.protocol) ? location.href : '';
+    document.getElementById('apptUrl').value =
+      /^https?:$/i.test(location.protocol) ? location.href : '';
 
     enquirySubmitted = true;
+    apptMsg.classList.add('hidden');
+    apptError.classList.add('hidden');
     reserveButton.disabled = true;
     reserveButton.setAttribute('aria-busy', 'true');
-    apptError.classList.add('hidden');
 
     reserveText.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
     reserveText.style.opacity = '0';
@@ -620,14 +627,30 @@ tailwind.config = {
         reserveText.style.transform = 'translateY(0)';
       });
     }, 250);
+
+    // If FormSubmit cannot return a response, give the user a retry option.
+    clearTimeout(enquiryTimer);
+    enquiryTimer = setTimeout(() => {
+      if (!enquirySubmitted) return;
+      enquirySubmitted = false;
+      reserveButton.disabled = false;
+      reserveButton.setAttribute('aria-busy', 'false');
+      reserveText.textContent = 'RESERVE';
+      reserveText.style.opacity = '1';
+      reserveText.style.transform = 'translateY(0)';
+      apptError.classList.remove('hidden');
+    }, 15000);
   });
 
-  // Wait for FormSubmit's iframe response before showing success.
+  // FormSubmit loads its response into this hidden iframe after submission.
   enquiryFrame.addEventListener('load', () => {
     if (!enquirySubmitted) return;
 
+    clearTimeout(enquiryTimer);
     enquirySubmitted = false;
+    reserveButton.disabled = true;
     reserveButton.setAttribute('aria-busy', 'false');
+
     reserveText.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
     reserveText.style.opacity = '0';
     reserveText.style.transform = 'translateY(-8px)';
@@ -639,8 +662,6 @@ tailwind.config = {
         reserveText.style.opacity = '1';
         reserveText.style.transform = 'translateY(0)';
       });
-      reserveButton.style.transition = 'border-color 0.5s ease, opacity 0.5s ease';
-      reserveButton.style.opacity = '1';
       apptMsg.classList.remove('hidden');
     }, 250);
   });
