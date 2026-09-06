@@ -154,7 +154,7 @@ tailwind.config = {
 <!-- ═══════════ PRELOADER ═══════════ -->
 <div id="preloader">
   <div class="logo-preloader-wrap relative flex items-center justify-center px-8">
-    <img src="alpha-preloader-logo.png"
+    <img src="images/alpha-preloader-logo.png"
          alt="ALPHA — Define Your Time"
          class="logo-preloader w-[min(42vw,230px)] h-auto object-contain select-none"
          draggable="false">
@@ -165,7 +165,7 @@ tailwind.config = {
 <header id="navbar" class="fixed top-0 left-0 right-0 z-50">
   <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-10 py-5">
     <a href="#top" class="flex items-center group" aria-label="ALPHA">
-      <img src="alpha-logo.png" alt="ALPHA" class="w-[120px] h-auto md:w-[155px] object-contain group-hover:scale-105 transition-transform duration-500">
+      <img src="images/alpha-logo.png" alt="ALPHA" class="w-[120px] h-auto md:w-[155px] object-contain group-hover:scale-105 transition-transform duration-500">
     </a>
     <div class="hidden md:flex items-center gap-10 text-[11px] tracking-wide2 font-light text-ivory/80">
       <a href="#collection" class="nav-link hover:text-gold transition-colors">COLLECTION</a>
@@ -305,7 +305,7 @@ tailwind.config = {
     <!-- Flagship: A-001 -->
     <article class="reveal watch-card grid lg:grid-cols-5 gap-0 border border-gold/25 bg-coal mb-8 overflow-hidden">
       <div class="lg:col-span-3 overflow-hidden bg-black">
-        <img src="alpha-c001-chronograph-celestia.png" alt="Alpha C-001 Chronograph Celestia" class="w-auto max-w-[78%] max-h-[500px] md:max-h-[540px] mx-auto object-contain p-4 md:p-8">
+        <img src="images/alpha-c001-chronograph-celestia.png" alt="Alpha C-001 Chronograph Celestia" class="w-auto max-w-[78%] max-h-[500px] md:max-h-[540px] mx-auto object-contain p-4 md:p-8">
       </div>
       <div class="lg:col-span-2 p-10 lg:p-14 flex flex-col justify-center">
         <p class="text-[10px] tracking-mega text-gold mb-4">FLAGSHIP · REF. C-001</p>
@@ -427,7 +427,7 @@ tailwind.config = {
   <div class="max-w-3xl mx-auto px-6 text-center">
     <p class="reveal text-[10px] tracking-mega text-golddim mb-10">04 — HERITAGE</p>
     <div class="reveal d1 mx-auto w-52 md:w-64 mb-10">
-      <img src="alpha-footer-logo-tagline.png" alt="Alpha logo — Define Your Time" class="w-full">
+      <img src="images/alpha-footer-logo-tagline.png" alt="Alpha logo — Define Your Time" class="w-full">
     </div>
     <h2 class="reveal d2 font-serif text-4xl md:text-6xl leading-tight mb-8">“Time is the only true luxury.<br><span class="italic text-golddim">We simply give it form.”</span></h2>
     <p class="reveal d3 text-sm font-light text-ink/60 leading-relaxed max-w-xl mx-auto">
@@ -453,20 +453,25 @@ tailwind.config = {
       Reserve a private appointment with our concierge and handle the collection —
       unhurried, undisturbed, unforgettable.
     </p>
-    <form id="apptForm" class="reveal d3 flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" method="POST" action="https://formsubmit.co/alphawatches.in@gmail.com" target="alphaEnquiryFrame">
+    <form id="apptForm" class="reveal d3 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto" method="POST" action="https://formsubmit.co/alphawatches.in@gmail.com" target="alphaEnquiryFrame">
       <input type="text" id="apptName" name="name" required placeholder="Full name"
-             class="flex-1 bg-transparent border border-ivory/25 focus:border-gold outline-none px-6 py-4 text-sm font-light placeholder:text-ivory/35 transition-colors">
+             class="w-full bg-transparent border border-ivory/25 focus:border-gold outline-none px-6 py-4 text-sm font-light placeholder:text-ivory/35 transition-colors">
       <input type="email" id="apptEmail" name="email" required placeholder="Email address"
-             class="flex-1 bg-transparent border border-ivory/25 focus:border-gold outline-none px-6 py-4 text-sm font-light placeholder:text-ivory/35 transition-colors">
+             class="w-full bg-transparent border border-ivory/25 focus:border-gold outline-none px-6 py-4 text-sm font-light placeholder:text-ivory/35 transition-colors">
+      <div class="sm:col-span-2 relative">
+        <textarea id="apptMessage" name="message" required maxlength="500" rows="7" placeholder="Tell us how we can assist you..."
+                  class="w-full bg-transparent border border-ivory/25 focus:border-gold outline-none px-6 py-5 pb-10 text-sm font-light leading-relaxed placeholder:text-ivory/35 transition-colors resize-none"></textarea>
+        <span id="messageCounter" class="absolute bottom-3 right-5 text-[9px] tracking-widest text-ivory/30">0 / 500</span>
+      </div>
       <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="display:none">
       <input type="hidden" name="_subject" value="New Alpha Watches Private Viewing Enquiry">
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_replyto" id="apptReplyTo" value="">
       <input type="hidden" name="_url" id="apptUrl" value="">
       <input type="hidden" name="_captcha" value="true">
-      <button type="submit" class="btn-gold border border-gold text-gold text-[10px] tracking-wide2 px-10 py-4 whitespace-nowrap"><span>RESERVE</span></button>
+      <button type="submit" class="btn-gold border border-gold text-gold text-[10px] tracking-wide2 px-10 py-4 whitespace-nowrap sm:col-span-2 justify-self-center"><span>RESERVE</span></button>
     </form>
-    <iframe name="alphaEnquiryFrame" title="Enquiry submission" style="display:none" aria-hidden="true"></iframe>
+    <iframe name="alphaEnquiryFrame" id="alphaEnquiryFrame" title="Enquiry submission" style="display:none" aria-hidden="true"></iframe>
     <p id="apptMsg" class="hidden mt-8 text-gold text-sm font-light tracking-wide">Thank you — our concierge will contact you within 24 hours to arrange your viewing.</p>
     <p id="apptError" class="hidden mt-6 text-red-300 text-xs font-light tracking-wide">We could not send your enquiry. Please try again or email alphawatches.in@gmail.com directly.</p>
   </div>
@@ -479,7 +484,7 @@ tailwind.config = {
       <div class="md:col-span-2">
         <div class="flex items-center gap-3 mb-6">
           <span class="w-9 h-9 flex items-center justify-center overflow-hidden">
-            <img src="alpha-emblem.png" alt="Alpha emblem" class="w-full h-full object-contain">
+            <img src="images/alpha-emblem.png" alt="Alpha emblem" class="w-full h-full object-contain">
           </span>
           <span class="font-light text-lg tracking-mega pl-1">ALPHA</span>
         </div>
@@ -574,29 +579,70 @@ tailwind.config = {
   const apptForm = document.getElementById('apptForm');
   const apptMsg = document.getElementById('apptMsg');
   const apptError = document.getElementById('apptError');
+  const enquiryFrame = document.getElementById('alphaEnquiryFrame');
+  const messageBox = document.getElementById('apptMessage');
+  const messageCounter = document.getElementById('messageCounter');
+  const reserveButton = apptForm.querySelector('button[type="submit"]');
+  const reserveText = reserveButton.querySelector('span');
+  let enquirySubmitted = false;
 
+  // Subtle message character counter.
+  messageBox.addEventListener('input', () => {
+    messageCounter.textContent = `${messageBox.value.length} / 500`;
+  });
+
+  // FormSubmit uses a native POST into the hidden iframe, avoiding CORS issues.
   apptForm.addEventListener('submit', e => {
     const name = document.getElementById('apptName').value.trim();
     const email = document.getElementById('apptEmail').value.trim();
+    const message = messageBox.value.trim();
     const honey = apptForm.querySelector('[name="_honey"]').value;
 
-    if (honey || !name || !email) return;
+    if (honey || !name || !email || !message) return;
 
     document.getElementById('apptReplyTo').value = email;
     document.getElementById('apptUrl').value = /^https?:$/i.test(location.protocol) ? location.href : '';
 
-    const button = apptForm.querySelector('button[type="submit"]');
-    button.disabled = true;
-    button.innerHTML = '<span>SENDING...</span>';
+    enquirySubmitted = true;
+    reserveButton.disabled = true;
+    reserveButton.setAttribute('aria-busy', 'true');
     apptError.classList.add('hidden');
 
-    // Show the confirmation after the browser has submitted the native form.
-    // FormSubmit receives the POST through the hidden iframe, so no fetch/CORS
-    // request is needed.
+    reserveText.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+    reserveText.style.opacity = '0';
+    reserveText.style.transform = 'translateY(-8px)';
+
     setTimeout(() => {
-      apptForm.classList.add('hidden');
+      reserveText.textContent = 'SENDING...';
+      reserveText.style.transform = 'translateY(8px)';
+      requestAnimationFrame(() => {
+        reserveText.style.opacity = '1';
+        reserveText.style.transform = 'translateY(0)';
+      });
+    }, 250);
+  });
+
+  // Wait for FormSubmit's iframe response before showing success.
+  enquiryFrame.addEventListener('load', () => {
+    if (!enquirySubmitted) return;
+
+    enquirySubmitted = false;
+    reserveButton.setAttribute('aria-busy', 'false');
+    reserveText.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+    reserveText.style.opacity = '0';
+    reserveText.style.transform = 'translateY(-8px)';
+
+    setTimeout(() => {
+      reserveText.textContent = 'ENQUIRY SENT ✓';
+      reserveText.style.transform = 'translateY(8px)';
+      requestAnimationFrame(() => {
+        reserveText.style.opacity = '1';
+        reserveText.style.transform = 'translateY(0)';
+      });
+      reserveButton.style.transition = 'border-color 0.5s ease, opacity 0.5s ease';
+      reserveButton.style.opacity = '1';
       apptMsg.classList.remove('hidden');
-    }, 900);
+    }, 250);
   });
 </script>
 </body>
