@@ -628,10 +628,25 @@ tailwind.config = {
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_replyto" id="apptReplyTo" value="">
       <input type="hidden" name="_url" id="apptUrl" value="">
+      <input type="hidden" name="submission_id" id="submissionId" value="">
+      <input type="hidden" name="submitted_at" id="submittedAt" value="">
+      <input type="hidden" name="form_source" value="Alpha Watches Private Viewing">
       <input type="hidden" name="_captcha" value="true">
       <button type="submit" class="btn-gold border border-gold text-gold text-[10px] tracking-wide2 px-10 py-4 whitespace-nowrap sm:col-span-2 justify-self-center"><span>RESERVE</span></button>
     </form>
     <iframe name="alphaEnquiryFrame" id="alphaEnquiryFrame" title="Enquiry submission" style="display:none" aria-hidden="true"></iframe>
+
+    <!-- Direct Google Sheets POST. This is intentionally separate from FormSubmit so
+         the enquiry is written to the sheet even if FormSubmit's webhook relay fails. -->
+    <form id="sheetEnquiryForm" method="POST" action="https://script.google.com/macros/s/AKfycbxcA4Lwy4gcjHEw5V0G2InwE8c9NpvETIj6j9A4k-iiKPi1t75ZtGQ1xq9h31_rLFj9aw/exec" target="sheetEnquiryFrame" style="display:none">
+      <input type="hidden" name="name" id="sheetName">
+      <input type="hidden" name="email" id="sheetEmail">
+      <input type="hidden" name="message" id="sheetMessage">
+      <input type="hidden" name="form_source" value="Alpha Watches Private Viewing">
+      <input type="hidden" name="enquiry_id" id="sheetEnquiryId">
+    </form>
+    <iframe name="sheetEnquiryFrame" id="sheetEnquiryFrame" title="Google Sheets submission" style="display:none" aria-hidden="true"></iframe>
+
     <p id="apptMsg" class="hidden mt-8 text-gold text-sm font-light tracking-wide">Thank you — our concierge will contact you within 24 hours to arrange your viewing.</p>
     <p id="apptError" class="hidden mt-6 text-red-300 text-xs font-light tracking-wide">We could not send your enquiry. Please try again or email alphawatches.in@gmail.com directly.</p>
   </div>
@@ -737,12 +752,21 @@ tailwind.config = {
   const apptMsg = document.getElementById('apptMsg');
   const apptError = document.getElementById('apptError');
   const enquiryFrame = document.getElementById('alphaEnquiryFrame');
+  const sheetEnquiryForm = document.getElementById('sheetEnquiryForm');
+  const sheetName = document.getElementById('sheetName');
+  const sheetEmail = document.getElementById('sheetEmail');
+  const sheetMessage = document.getElementById('sheetMessage');
+  const sheetEnquiryId = document.getElementById('sheetEnquiryId');
   const messageBox = document.getElementById('apptMessage');
   const messageCounter = document.getElementById('messageCounter');
   const reserveButton = apptForm.querySelector('button[type="submit"]');
   const reserveText = reserveButton.querySelector('span');
+  const submissionId = document.getElementById('submissionId');
+  const submittedAt = document.getElementById('submittedAt');
   let enquirySubmitted = false;
   let enquiryTimer = null;
+
+  // Google Sheets enquiry-history webhook is included as a normal hidden form field above.
 
   // Subtle message character counter.
   messageBox.addEventListener('input', () => {
@@ -767,6 +791,26 @@ tailwind.config = {
     document.getElementById('apptReplyTo').value = email;
     document.getElementById('apptUrl').value =
       /^https?:$/i.test(location.protocol) ? location.href : '';
+
+    // Add a unique reference and timestamp so every enquiry is easier to
+    // identify in the FormSubmit table/archive and in any future CRM/sheet.
+    const now = new Date();
+    const stamp = now.toISOString().replace(/[-:TZ.]/g, '').slice(0, 14);
+    const random = Math.random().toString(36).slice(2, 7).toUpperCase();
+    submissionId.value = `ALP-${stamp}-${random}`;
+    submittedAt.value = now.toLocaleString(undefined, {
+      dateStyle: 'medium',
+      timeStyle: 'short'
+    });
+
+    // Send the same enquiry directly to the deployed Google Apps Script.
+    // This uses a normal HTML POST to a hidden iframe, so there is no CORS/fetch
+    // dependency and it has already been verified to work with this deployment.
+    sheetName.value = name;
+    sheetEmail.value = email;
+    sheetMessage.value = message;
+    sheetEnquiryId.value = submissionId.value;
+    sheetEnquiryForm.submit();
 
     enquirySubmitted = true;
     apptMsg.classList.add('hidden');
